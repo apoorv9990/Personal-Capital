@@ -39,9 +39,9 @@ public class GetArticlesService extends IntentService {
 
             try{
                 //TODO get data
-                String articlesResponse = getArticles();
+                Feed feed = getArticles();
                 Bundle bundle = new Bundle();
-                bundle.putString(Constants.ARTICLES_RESPONSE, articlesResponse);
+                bundle.putParcelable(Constants.ARTICLES_RESPONSE, feed);
                 receiver.send(Constants.FINISHED, bundle);
             }
             catch (Exception e) {
@@ -51,12 +51,12 @@ public class GetArticlesService extends IntentService {
         }
     }
 
-    private String getArticles() {
+    private Feed getArticles() {
 
         InputStream stream = null;
         HttpsURLConnection connection = null;
 
-        String response = null;
+        Feed feed = null;
 
         try {
 
@@ -70,9 +70,7 @@ public class GetArticlesService extends IntentService {
             stream = connection.getInputStream();
             if(stream != null) {
                 FeedParser parser = new FeedParser();
-                Feed feed = parser.parse(stream);
-                System.err.println(feed.getTitle());
-//                response = readStream(stream);
+                feed = parser.parse(stream);
             }
 
         } catch (Exception e) {
@@ -87,7 +85,7 @@ public class GetArticlesService extends IntentService {
             if(connection != null) connection.disconnect();
         }
 
-        return response;
+        return feed;
     }
 
     private String readStream(InputStream inputStream) {

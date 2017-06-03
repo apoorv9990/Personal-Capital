@@ -3,7 +3,10 @@ package com.personal.capital.adapters;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.personal.capital.models.Article;
 import com.personal.capital.views.ArticleView;
+
+import java.util.List;
 
 /**
  * Created by patel on 6/1/2017.
@@ -14,8 +17,9 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     private final int MAIN_ARTICLE = 0;
     private final int PREVIOUS_ARTICLE = 1;
 
-    public ArticleAdapter() {
+    private List<Article> mArticles;
 
+    public ArticleAdapter() {
     }
 
     @Override
@@ -40,7 +44,10 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 5;
+
+        if(this.mArticles == null) return 0;
+
+        return this.mArticles.size();
     }
 
     @Override
@@ -50,6 +57,11 @@ public class ArticleAdapter extends RecyclerView.Adapter {
             return MAIN_ARTICLE;
 
         return PREVIOUS_ARTICLE;
+    }
+
+    public void setArticles(List<Article> articles) {
+        this.mArticles = articles;
+        notifyDataSetChanged();
     }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder {

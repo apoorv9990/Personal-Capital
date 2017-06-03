@@ -9,14 +9,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.personal.capital.R;
 import com.personal.capital.adapters.ArticleAdapter;
+import com.personal.capital.models.Article;
 import com.personal.capital.utils.PixelUtil;
+
+import java.util.List;
 
 /**
  * Created by patel on 6/1/2017.
@@ -24,9 +26,11 @@ import com.personal.capital.utils.PixelUtil;
 
 public class MainView extends LinearLayout {
 
-    private TextView titleTextView;
+    private TextView mTitleTextView;
 
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
+
+    private ArticleAdapter mAdapter;
 
     public MainView(Context context) {
         super(context);
@@ -58,31 +62,30 @@ public class MainView extends LinearLayout {
     }
 
     public void setUpTitleView() {
-        this.titleTextView = new TextView(getContext());
+        this.mTitleTextView = new TextView(getContext());
 
         LinearLayout.LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         int spacingSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_s));
         int spacingXSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_xs));
 
-        this.titleTextView.setPadding(spacingSmall, spacingXSmall, spacingSmall, spacingXSmall);
-        this.titleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
-//        this.titleTextView.setTextSize(PixelUtil.dpToPx(getContext(), 8));
-        this.titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 23);
-        this.titleTextView.setGravity(Gravity.CENTER);
-        this.titleTextView.setText("Title");
+        this.mTitleTextView.setPadding(spacingSmall, spacingXSmall, spacingSmall, spacingXSmall);
+        this.mTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
+        this.mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
+                getContext().getResources().getDimension(R.dimen.title_size));
+        this.mTitleTextView.setGravity(Gravity.CENTER);
 
-        this.titleTextView.setLayoutParams(titleParams);
+        this.mTitleTextView.setLayoutParams(titleParams);
 
-        addView(titleTextView);
+        addView(mTitleTextView);
     }
 
     public void setUpRecyclerView() {
-        this.recyclerView = new RecyclerView(getContext());
+        this.mRecyclerView = new RecyclerView(getContext());
 
         LinearLayout.LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        this.recyclerView.setLayoutParams(recyclerParams);
+        this.mRecyclerView.setLayoutParams(recyclerParams);
 
         int spanCount = 2;
 
@@ -97,14 +100,22 @@ public class MainView extends LinearLayout {
                 return position == 0 ? layoutManager.getSpanCount() : 1;
             }
         });
-        recyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(layoutManager);
 
-        ArticleAdapter adapter = new ArticleAdapter();
-        recyclerView.setAdapter(adapter);
+        mAdapter = new ArticleAdapter();
+        mRecyclerView.setAdapter(mAdapter);
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing_xs);
-        recyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+        mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
 
-        addView(recyclerView);
+        addView(mRecyclerView);
+    }
+    
+    public void setTitle(String title) {
+        mTitleTextView.setText(title);
+    }
+
+    public void setArticles(List<Article> articles) {
+        mAdapter.setArticles(articles);
     }
 }

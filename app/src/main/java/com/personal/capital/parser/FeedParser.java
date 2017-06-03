@@ -1,9 +1,7 @@
 package com.personal.capital.parser;
 
-import android.util.Xml;
-
 import com.personal.capital.models.Feed;
-import com.personal.capital.models.Item;
+import com.personal.capital.models.Article;
 import com.personal.capital.models.Picture;
 import com.personal.capital.utils.Constants;
 
@@ -25,10 +23,8 @@ public class FeedParser {
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(false);
-//            XmlPullParser parser = Xml.newPullParser();
             XmlPullParser parser = factory.newPullParser();
             parser.setInput(inputStream, null);
-//            parser.next();
             feed = readFeed(parser);
         } finally {
             inputStream.close();
@@ -47,35 +43,20 @@ public class FeedParser {
                 if(tagName.equals(Constants.TITLE)) {
                     feed.setTitle(readTitle(parser));
                 } else if(tagName.equals(Constants.ITEM)) {
-                    feed.addItem(readItem(parser));
+                    feed.addArticle(readArticle(parser));
                 }
             }
 
             eventType = parser.next();
         }
 
-//        parser.require(XmlPullParser.START_TAG, null, Constants.CHANNEL);
-//        while(parser.next() != XmlPullParser.END_TAG) {
-//            if(parser.getEventType() != XmlPullParser.START_TAG) continue;
-//
-//            String tagName = parser.getName();
-//
-//            if(tagName.equals(Constants.TITLE)) {
-//                feed.setTitle(readTitle(parser));
-//            } else if(tagName.equals(Constants.ITEM)) {
-//                feed.addItem(readItem(parser));
-//            } else {
-//                skip(parser);
-//            }
-//        }
-
         return feed;
     }
 
-    private Item readItem(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private Article readArticle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.ITEM);
 
-        Item item = new Item();
+        Article item = new Article();
 
         while(parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {

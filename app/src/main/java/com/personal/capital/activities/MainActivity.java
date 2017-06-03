@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.personal.capital.models.Feed;
 import com.personal.capital.receivers.ArticleResultReceiver;
 import com.personal.capital.services.GetArticlesService;
 import com.personal.capital.utils.Constants;
@@ -18,12 +19,14 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
 
     private ProgressDialog mProgressDialog;
 
+    private MainView mView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        MainView view = new MainView(this);
-        setContentView(view);
+        mView = new MainView(this);
+        setContentView(mView);
 
         mReceiver = new ArticleResultReceiver(new Handler());
         mReceiver.setReceiver(this);
@@ -49,8 +52,11 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
                 mProgressDialog.show();
                 break;
             case Constants.FINISHED:
-                String resultString = resultData.getString(Constants.ARTICLES_RESPONSE);
-                System.err.println("articleResponse " + resultString);
+                Feed feed = resultData.getParcelable(Constants.ARTICLES_RESPONSE);
+
+                mView.setTitle(feed.getTitle());
+                mView.setArticles(feed.getArticles());
+
                 mProgressDialog.hide();
                 // do something interesting
                 // hide progress
