@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.os.ResultReceiver;
 
 import com.personal.capital.R;
+import com.personal.capital.models.Feed;
+import com.personal.capital.parser.FeedParser;
 import com.personal.capital.utils.Constants;
 
 import java.io.BufferedReader;
@@ -67,7 +69,10 @@ public class GetArticlesService extends IntentService {
 
             stream = connection.getInputStream();
             if(stream != null) {
-                response = readStream(stream);
+                FeedParser parser = new FeedParser();
+                Feed feed = parser.parse(stream);
+                System.err.println(feed.getTitle());
+//                response = readStream(stream);
             }
 
         } catch (Exception e) {
