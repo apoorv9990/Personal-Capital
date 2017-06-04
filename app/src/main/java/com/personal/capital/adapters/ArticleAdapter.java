@@ -1,13 +1,20 @@
 package com.personal.capital.adapters;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.personal.capital.models.Article;
 import com.personal.capital.utils.StringUtils;
 import com.personal.capital.views.ArticleView;
 import com.personal.capital.views.MainArticleView;
+import com.personal.capital.workers.BitmapWorkerTask;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -21,11 +28,29 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
     private List<Article> mArticles;
 
+    private int screenWidth = 0;
+
+    private LruCache mMemoryCache;
+
     public ArticleAdapter() {
+        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if(screenWidth == 0)
+            screenWidth = parent.getContext().getResources().getDisplayMetrics().widthPixels;
 
         ArticleView view;
 
@@ -35,13 +60,6 @@ public class ArticleAdapter extends RecyclerView.Adapter {
             view = new ArticleView(parent.getContext());
         }
 
-//        if(viewType == MAIN_ARTICLE) {
-//            view.setLayoutParams(new ViewGroup.LayoutParams(parent.getContext().getResources().getDisplayMetrics().widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        }
-//        else {
-//            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        }
-
         return new ArticleViewHolder(view);
     }
 
@@ -50,22 +68,27 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
         Article currentArticle = mArticles.get(position);
 
-        if(holder.itemView instanceof MainArticleView) {
-            MainArticleView mainArticleView = ((MainArticleView) holder.itemView);
+        ArticleView articleView = ((ArticleView) holder.itemView);
+        articleView.setTag(position);
 
-            if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
-                mainArticleView.setTitle(currentArticle.getTitle());
-            }
+        if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
+            articleView.setTitle(currentArticle.getTitle());
+        }
+
+        Bitmap articleImage = getBitmapFromMemCache(currentArticle.getPicture().getUrl());
+
+        if(articleImage != null) {
+            articleView.setArticleImageBitmap(articleImage);
+        } else {
+            articleView.showProgress();
+            BitmapWorkerTask.loadBitmap(holder.itemView.getContext(), currentArticle.getPicture().getUrl(), articleView);
+        }
+
+        if(articleView instanceof MainArticleView) {
+            MainArticleView mainArticleView = ((MainArticleView) articleView);
 
             if(StringUtils.isNotNullOrEmpty(currentArticle.getDescription())) {
                 mainArticleView.setDescription(currentArticle.getDescription());
-            }
-        }
-        else {
-            ArticleView articleView = ((ArticleView) holder.itemView);
-
-            if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
-                articleView.setTitle(currentArticle.getTitle());
             }
         }
     }
@@ -81,8 +104,9 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
 
-        if(position == 0)
+        if(position == 0) {
             return MAIN_ARTICLE;
+        }
 
         return PREVIOUS_ARTICLE;
     }
@@ -90,6 +114,10 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     public void setArticles(List<Article> articles) {
         this.mArticles = articles;
         notifyDataSetChanged();
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return (Bitmap) mMemoryCache.get(key);
     }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,9 @@
 package com.personal.capital.views;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -12,8 +15,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.personal.capital.R;
@@ -25,6 +30,8 @@ import com.personal.capital.utils.PixelUtil;
 
 public class ArticleView extends LinearLayout {
 
+    private FrameLayout mImageViewContainer;
+    private ProgressBar mImageViewProgressDialog;
     private ImageView mArticleImageView;
     private TextView mArticleTitleTextView;
 
@@ -65,44 +72,88 @@ public class ArticleView extends LinearLayout {
         mArticleTitleTextView.setMaxLines(maxLines);
     }
 
+    public void setArticleImageBitmap(Bitmap bitmap) {
+        mArticleImageView.setImageBitmap(bitmap);
+    }
+
+    public void setArticleImageDrawable(Drawable drawable) {
+        mArticleImageView.setImageDrawable(drawable);
+    }
+
+    public Drawable getArticleImageDrawable() {
+        return mArticleImageView.getDrawable();
+    }
+
+    public void hideProgress() {
+        mImageViewProgressDialog.setVisibility(View.GONE);
+    }
+
+    public void showProgress() {
+        mImageViewProgressDialog.setVisibility(View.VISIBLE);
+    }
+
     protected void init() {
         setOrientation(VERTICAL);
         setBackgroundResource(R.drawable.rounded_article_view);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        setUpImageView();
+//        setUpImageView();
+        setUpImageContainer();
         setUpTitleView();
     }
 
+    private void setUpImageContainer() {
+        mImageViewContainer = new FrameLayout(getContext());
+
+        LinearLayout.LayoutParams imageViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        mImageViewContainer.setLayoutParams(imageViewParams);
+
+        setUpImageView();
+        setUpImageViewProgressDialog();
+
+        addView(mImageViewContainer);
+    }
+
+    private void setUpImageViewProgressDialog() {
+        mImageViewProgressDialog = new ProgressBar(getContext());
+
+        FrameLayout.LayoutParams imageViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        mImageViewProgressDialog.setLayoutParams(imageViewParams);
+
+        mImageViewProgressDialog.setIndeterminate(true);
+
+        mImageViewContainer.addView(mImageViewProgressDialog);
+    }
+
     private void setUpImageView(){
-        this.mArticleImageView = new ImageView(getContext());
+        mArticleImageView = new ImageView(getContext());
 
         int imageHeight = PixelUtil.dpToPx(getContext(), 150);
 
-        LinearLayout.LayoutParams imageViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeight);
+        FrameLayout.LayoutParams imageViewParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeight);
 
-        this.mArticleImageView.setLayoutParams(imageViewParams);
+        mArticleImageView.setLayoutParams(imageViewParams);
 
-        this.mArticleImageView.setBackgroundResource(R.mipmap.ic_launcher_round);
-
-        addView(this.mArticleImageView);
+        mImageViewContainer.addView(mArticleImageView);
     }
 
     private void setUpTitleView() {
-        this.mArticleTitleTextView = new TextView(getContext());
+        mArticleTitleTextView = new TextView(getContext());
 
         LinearLayout.LayoutParams titleViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        this.mArticleTitleTextView.setLayoutParams(titleViewParams);
+        mArticleTitleTextView.setLayoutParams(titleViewParams);
 
         int spacingXSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_xs));
 
-        this.mArticleTitleTextView.setPadding(spacingXSmall, spacingXSmall, spacingXSmall, spacingXSmall);
-        this.mArticleTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
-        this.mArticleTitleTextView.setMaxLines(2);
-        this.mArticleTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
-        this.mArticleTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.article_title_size));
+        mArticleTitleTextView.setPadding(spacingXSmall, spacingXSmall, spacingXSmall, spacingXSmall);
+        mArticleTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
+        mArticleTitleTextView.setMaxLines(2);
+        mArticleTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+        mArticleTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.article_title_size));
 
-        addView(this.mArticleTitleTextView);
+        addView(mArticleTitleTextView);
     }
 }
