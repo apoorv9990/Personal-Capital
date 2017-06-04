@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         ArticleAdapter articleAdapter = new ArticleAdapter(new ArticleAdapter.Interactor() {
             @Override
             public void onItemClicked(Article article) {
-                
+                DetailActivity.startDetailActivity(MainActivity.this, article.getTitle(), article.getLink());
             }
         });
 

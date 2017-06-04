@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.DetailActivity"/>
+
         <service android:enabled="true" android:name=".services.GetArticlesService"/>
 
     </application>

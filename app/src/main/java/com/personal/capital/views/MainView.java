@@ -61,8 +61,21 @@ public class MainView extends LinearLayout {
         setUpTitleView();
         setUpRecyclerView();
     }
+    
+    public void setTitle(String title) {
+        mTitleTextView.setText(title);
+    }
 
-    public void setUpTitleView() {
+    public void setAdapter(ArticleAdapter adapter) {
+        mAdapter = adapter;
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public void setArticles(List<Article> articles) {
+        mAdapter.setArticles(articles);
+    }
+
+    private void setUpTitleView() {
         this.mTitleTextView = new TextView(getContext());
 
         LinearLayout.LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -80,7 +93,7 @@ public class MainView extends LinearLayout {
         addView(mTitleTextView);
     }
 
-    public void setUpRecyclerView() {
+    private void setUpRecyclerView() {
         this.mRecyclerView = new RecyclerView(getContext());
 
         LinearLayout.LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -106,18 +119,5 @@ public class MainView extends LinearLayout {
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
 
         addView(mRecyclerView);
-    }
-    
-    public void setTitle(String title) {
-        mTitleTextView.setText(title);
-    }
-
-    public void setAdapter(ArticleAdapter adapter) {
-        mAdapter = adapter;
-        mRecyclerView.setAdapter(mAdapter);
-    }
-
-    public void setArticles(List<Article> articles) {
-        mAdapter.setArticles(articles);
     }
 }
