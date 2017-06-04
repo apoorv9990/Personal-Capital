@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.personal.capital.adapters.ArticleAdapter;
+import com.personal.capital.models.Article;
 import com.personal.capital.models.Feed;
 import com.personal.capital.receivers.ArticleResultReceiver;
 import com.personal.capital.services.GetArticlesService;
@@ -32,6 +34,15 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         mView = new MainView(this);
         setContentView(mView);
 
+        ArticleAdapter articleAdapter = new ArticleAdapter(new ArticleAdapter.Interactor() {
+            @Override
+            public void onItemClicked(Article article) {
+                
+            }
+        });
+
+        mView.setAdapter(articleAdapter);
+
         mReceiver = new ArticleResultReceiver(new Handler());
         mReceiver.setReceiver(this);
 
@@ -41,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         if(savedInstanceState != null) {
             mFeed = savedInstanceState.getParcelable(FEED);
         }
-        
+
         if(mFeed == null) {
             getArticles();
         } else {

@@ -5,8 +5,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.personal.capital.R;
 import com.personal.capital.models.Article;
@@ -29,14 +31,17 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
     private List<Article> mArticles;
 
-    private int spanCount;
     private int screenWidth = 0;
 
     private LruCache mMemoryCache;
 
-    public ArticleAdapter() {
+    private Interactor mInteractor;
+
+    public ArticleAdapter(Interactor interactor) {
         int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         int cacheSize = maxMemory / 8;
+
+        mInteractor = interactor;
 
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
@@ -62,7 +67,7 @@ public class ArticleAdapter extends RecyclerView.Adapter {
             view = new ArticleView(parent.getContext());
         }
 
-        return new ArticleViewHolder(view);
+        return new ArticleViewHolder(view, mInteractor);
     }
 
     @Override
@@ -70,38 +75,7 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
         Article currentArticle = mArticles.get(position);
 
-        ArticleView articleView = ((ArticleView) holder.itemView);
-        articleView.setTag(position);
-
-        if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
-            articleView.setTitle(currentArticle.getTitle());
-        }
-
-        Bitmap articleImage = getBitmapFromMemCache(currentArticle.getPicture().getUrl());
-
-        if(articleImage != null) {
-            articleView.setArticleImageBitmap(articleImage);
-        } else {
-            articleView.showProgress();
-            BitmapWorkerTask.loadBitmap(holder.itemView.getContext(), currentArticle.getPicture().getUrl(), articleView);
-        }
-
-        int imageWidth = screenWidth / 3;
-
-        if(articleView instanceof MainArticleView) {
-
-            imageWidth = screenWidth;
-
-            MainArticleView mainArticleView = ((MainArticleView) articleView);
-
-            if(StringUtils.isNotNullOrEmpty(currentArticle.getDescription())) {
-                mainArticleView.setDescription(currentArticle.getDescription());
-            }
-        }
-
-        int imageHeight = (imageWidth * currentArticle.getPicture().getHeight()) / currentArticle.getPicture().getWidth();
-
-        System.err.println("imageWidth: " + imageWidth + " imageHeight: " + imageHeight);
+        ((ArticleViewHolder)holder).bind(currentArticle);
     }
 
     @Override
@@ -127,18 +101,57 @@ public class ArticleAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void setSpanCount(int spanCount) {
-        this.spanCount = spanCount;
-    }
-
     public Bitmap getBitmapFromMemCache(String key) {
         return (Bitmap) mMemoryCache.get(key);
     }
 
-    public class ArticleViewHolder extends RecyclerView.ViewHolder {
+    public class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        public ArticleViewHolder(ArticleView view) {
+        private Interactor mInteractor;
+        private Article mArticle;
+
+        public ArticleViewHolder(ArticleView view, Interactor interactor) {
             super(view);
+            mInteractor = interactor;
+            view.setOnClickListener(this);
         }
+
+        public void bind(Article article) {
+
+            mArticle = article;
+
+            ArticleView articleView = (ArticleView) itemView;
+
+            if(StringUtils.isNotNullOrEmpty(mArticle.getTitle())) {
+                articleView.setTitle(mArticle.getTitle());
+            }
+
+            Bitmap articleImage = getBitmapFromMemCache(mArticle.getPicture().getUrl());
+
+            if(articleImage != null) {
+                articleView.setArticleImageBitmap(articleImage);
+            } else {
+                articleView.showProgress();
+                BitmapWorkerTask.loadBitmap(articleView.getContext(), mArticle.getPicture().getUrl(), articleView);
+            }
+
+            if(articleView instanceof MainArticleView) {
+
+                MainArticleView mainArticleView = ((MainArticleView) articleView);
+
+                if(StringUtils.isNotNullOrEmpty(mArticle.getDescription())) {
+                    mainArticleView.setDescription(mArticle.getDescription());
+                }
+            }
+        }
+
+        @Override
+        public void onClick(View view) {
+            mInteractor.onItemClicked(mArticle);
+        }
+    }
+
+    public interface Interactor {
+        void onItemClicked(Article article);
     }
 }

@@ -102,10 +102,6 @@ public class MainView extends LinearLayout {
         });
         mRecyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new ArticleAdapter();
-        mAdapter.setSpanCount(spanCount);
-        mRecyclerView.setAdapter(mAdapter);
-
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing_xs);
         mRecyclerView.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
 
@@ -114,6 +110,11 @@ public class MainView extends LinearLayout {
     
     public void setTitle(String title) {
         mTitleTextView.setText(title);
+    }
+
+    public void setAdapter(ArticleAdapter adapter) {
+        mAdapter = adapter;
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     public void setArticles(List<Article> articles) {
