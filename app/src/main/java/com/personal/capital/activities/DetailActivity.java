@@ -12,6 +12,8 @@ import java.net.URI;
 
 /**
  * Created by patel on 6/3/2017.
+ *
+ * Loads the article in a webview
  */
 
 public class DetailActivity extends AppCompatActivity {
