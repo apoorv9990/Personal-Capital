@@ -136,6 +136,8 @@ public class ArticleView extends LinearLayout {
 
         mArticleImageView.setLayoutParams(imageViewParams);
 
+        mArticleImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         mImageViewContainer.addView(mArticleImageView);
     }
 

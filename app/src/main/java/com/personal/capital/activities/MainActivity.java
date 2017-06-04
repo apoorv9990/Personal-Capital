@@ -15,11 +15,15 @@ import com.personal.capital.views.MainView;
 
 public class MainActivity extends AppCompatActivity implements ArticleResultReceiver.Receiver{
 
+    private static final String FEED = "feed";
+
     private ArticleResultReceiver mReceiver;
 
     private ProgressDialog mProgressDialog;
 
     private MainView mView;
+
+    private Feed mFeed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +38,28 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setIndeterminate(true);
 
-        getArticles();
+        if(savedInstanceState != null) {
+            mFeed = savedInstanceState.getParcelable(FEED);
+        }
+        
+        if(mFeed == null) {
+            getArticles();
+        } else {
+            mView.setTitle(mFeed.getTitle());
+            mView.setArticles(mFeed.getArticles());
+        }
     }
 
     @Override
     protected void onDestroy() {
         mReceiver.setReceiver(null);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(FEED, mFeed);
     }
 
     @Override
@@ -52,10 +71,10 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
                 mProgressDialog.show();
                 break;
             case Constants.FINISHED:
-                Feed feed = resultData.getParcelable(Constants.ARTICLES_RESPONSE);
+                mFeed = resultData.getParcelable(Constants.ARTICLES_RESPONSE);
 
-                mView.setTitle(feed.getTitle());
-                mView.setArticles(feed.getArticles());
+                mView.setTitle(mFeed.getTitle());
+                mView.setArticles(mFeed.getArticles());
 
                 mProgressDialog.hide();
                 // do something interesting

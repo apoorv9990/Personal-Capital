@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.personal.capital.R;
 import com.personal.capital.models.Article;
 import com.personal.capital.utils.StringUtils;
 import com.personal.capital.views.ArticleView;
@@ -28,6 +29,7 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
     private List<Article> mArticles;
 
+    private int spanCount;
     private int screenWidth = 0;
 
     private LruCache mMemoryCache;
@@ -84,13 +86,22 @@ public class ArticleAdapter extends RecyclerView.Adapter {
             BitmapWorkerTask.loadBitmap(holder.itemView.getContext(), currentArticle.getPicture().getUrl(), articleView);
         }
 
+        int imageWidth = screenWidth / 3;
+
         if(articleView instanceof MainArticleView) {
+
+            imageWidth = screenWidth;
+
             MainArticleView mainArticleView = ((MainArticleView) articleView);
 
             if(StringUtils.isNotNullOrEmpty(currentArticle.getDescription())) {
                 mainArticleView.setDescription(currentArticle.getDescription());
             }
         }
+
+        int imageHeight = (imageWidth * currentArticle.getPicture().getHeight()) / currentArticle.getPicture().getWidth();
+
+        System.err.println("imageWidth: " + imageWidth + " imageHeight: " + imageHeight);
     }
 
     @Override
@@ -114,6 +125,10 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     public void setArticles(List<Article> articles) {
         this.mArticles = articles;
         notifyDataSetChanged();
+    }
+
+    public void setSpanCount(int spanCount) {
+        this.spanCount = spanCount;
     }
 
     public Bitmap getBitmapFromMemCache(String key) {

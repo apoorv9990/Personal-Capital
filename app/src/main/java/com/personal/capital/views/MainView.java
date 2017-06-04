@@ -103,6 +103,7 @@ public class MainView extends LinearLayout {
         mRecyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new ArticleAdapter();
+        mAdapter.setSpanCount(spanCount);
         mRecyclerView.setAdapter(mAdapter);
 
         int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing_xs);
