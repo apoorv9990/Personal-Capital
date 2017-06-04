@@ -11,6 +11,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +29,10 @@ import java.util.List;
 
 public class MainView extends LinearLayout {
 
+    private FrameLayout mHeader;
+    
+    private ImageView mRefreshImageView;
+    
     private TextView mTitleTextView;
 
     private RecyclerView mRecyclerView;
@@ -58,7 +64,8 @@ public class MainView extends LinearLayout {
 
         setOrientation(VERTICAL);
 
-        setUpTitleView();
+//        setUpTitleView();
+        setUpHeaderView();
         setUpRecyclerView();
     }
     
@@ -75,30 +82,62 @@ public class MainView extends LinearLayout {
         mAdapter.setArticles(articles);
     }
 
+    public void setOnRefreshClickListener(OnClickListener listener) {
+        mRefreshImageView.setOnClickListener(listener);
+    }
+    
+    private void setUpHeaderView() {
+        mHeader = new FrameLayout(getContext());
+
+        LinearLayout.LayoutParams headerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        mHeader.setLayoutParams(headerParams);
+
+        setUpTitleView();
+        setUpRefreshView();
+
+        addView(mHeader);
+    }
+
     private void setUpTitleView() {
-        this.mTitleTextView = new TextView(getContext());
+        mTitleTextView = new TextView(getContext());
 
-        LinearLayout.LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        FrameLayout.LayoutParams titleParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        this.mTitleTextView.setLayoutParams(titleParams);
+        mTitleTextView.setLayoutParams(titleParams);
 
         int spacingSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_s));
         int spacingXSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_xs));
 
-        this.mTitleTextView.setPadding(spacingSmall, spacingXSmall, spacingSmall, spacingXSmall);
-        this.mTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
-        this.mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.title_size));
-        this.mTitleTextView.setGravity(Gravity.CENTER);
+        mTitleTextView.setPadding(spacingSmall, spacingXSmall, spacingSmall, spacingXSmall);
+        mTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
+        mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.title_size));
+        mTitleTextView.setGravity(Gravity.CENTER);
 
-        addView(mTitleTextView);
+        mHeader.addView(mTitleTextView);
+    }
+
+    private void setUpRefreshView() {
+        mRefreshImageView = new ImageView(getContext());
+
+        int refreshDimension = getContext().getResources().getDimensionPixelSize(R.dimen.refresh_size);
+
+        FrameLayout.LayoutParams refreshParams = new FrameLayout.LayoutParams(refreshDimension, refreshDimension);
+        refreshParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+
+        mRefreshImageView.setLayoutParams(refreshParams);
+
+        mRefreshImageView.setImageResource(R.drawable.ic_refresh);
+
+        mHeader.addView(mRefreshImageView);
     }
 
     private void setUpRecyclerView() {
-        this.mRecyclerView = new RecyclerView(getContext());
+        mRecyclerView = new RecyclerView(getContext());
 
         LinearLayout.LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        this.mRecyclerView.setLayoutParams(recyclerParams);
+        mRecyclerView.setLayoutParams(recyclerParams);
 
         int spanCount = 2;
 

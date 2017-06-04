@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.personal.capital.adapters.ArticleAdapter;
@@ -42,6 +43,12 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         });
 
         mView.setAdapter(articleAdapter);
+        mView.setOnRefreshClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getArticles();
+            }
+        });
 
         mReceiver = new ArticleResultReceiver(new Handler());
         mReceiver.setReceiver(this);
