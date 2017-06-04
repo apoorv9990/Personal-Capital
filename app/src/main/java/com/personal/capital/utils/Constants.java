@@ -16,6 +16,7 @@ public class Constants {
     public static final String TITLE = "title";
     public static final String ITEM = "item";
     public static final String LINK = "link";
+    public static final String DESCRIPTION = "description";
     public static final String MEDIA_CONTENT = "media:content";
 
     public static final String URL = "url";

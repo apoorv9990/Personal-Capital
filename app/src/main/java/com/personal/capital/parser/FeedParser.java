@@ -68,6 +68,8 @@ public class FeedParser {
                 item.setTitle(readTitle(parser));
             } else if (name.equals(Constants.LINK)) {
                 item.setLink(readLink(parser));
+            } else if (name.equals(Constants.DESCRIPTION)) {
+                item.setDescription(readDescription(parser));
             } else if (name.equals(Constants.MEDIA_CONTENT)) {
                 item.setPicture(readPicture(parser));
             } else {
@@ -97,11 +99,18 @@ public class FeedParser {
         return title;
     }
 
+    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, null, Constants.DESCRIPTION);
+        String description = readText(parser);
+        parser.require(XmlPullParser.END_TAG, null, Constants.DESCRIPTION);
+        return description;
+    }
+
     private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.LINK);
-        String title = readText(parser);
+        String link = readText(parser);
         parser.require(XmlPullParser.END_TAG, null, Constants.LINK);
-        return title;
+        return link;
     }
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {

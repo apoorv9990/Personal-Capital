@@ -6,5 +6,7 @@
 
     <dimen name="article_row_stroke">1dp</dimen>
 
-    <dimen name="title_size">8dp</dimen>
+    <dimen name="title_size">22dp</dimen>
+    <dimen name="article_title_size">16dp</dimen>
+    <dimen name="article_description_size">12dp</dimen>
 </resources>

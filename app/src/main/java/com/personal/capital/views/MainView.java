@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -66,16 +67,15 @@ public class MainView extends LinearLayout {
 
         LinearLayout.LayoutParams titleParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        this.mTitleTextView.setLayoutParams(titleParams);
+
         int spacingSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_s));
         int spacingXSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_xs));
 
         this.mTitleTextView.setPadding(spacingSmall, spacingXSmall, spacingSmall, spacingXSmall);
         this.mTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
-        this.mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
-                getContext().getResources().getDimension(R.dimen.title_size));
+        this.mTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.title_size));
         this.mTitleTextView.setGravity(Gravity.CENTER);
-
-        this.mTitleTextView.setLayoutParams(titleParams);
 
         addView(mTitleTextView);
     }

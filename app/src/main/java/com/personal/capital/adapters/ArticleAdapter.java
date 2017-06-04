@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.personal.capital.models.Article;
+import com.personal.capital.utils.StringUtils;
 import com.personal.capital.views.ArticleView;
+import com.personal.capital.views.MainArticleView;
 
 import java.util.List;
 
@@ -25,7 +27,13 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        ArticleView view = new ArticleView(parent.getContext());
+        ArticleView view;
+
+        if(viewType == MAIN_ARTICLE) {
+            view = new MainArticleView(parent.getContext());
+        } else {
+            view = new ArticleView(parent.getContext());
+        }
 
 //        if(viewType == MAIN_ARTICLE) {
 //            view.setLayoutParams(new ViewGroup.LayoutParams(parent.getContext().getResources().getDisplayMetrics().widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -40,6 +48,26 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
+        Article currentArticle = mArticles.get(position);
+
+        if(holder.itemView instanceof MainArticleView) {
+            MainArticleView mainArticleView = ((MainArticleView) holder.itemView);
+
+            if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
+                mainArticleView.setTitle(currentArticle.getTitle());
+            }
+
+            if(StringUtils.isNotNullOrEmpty(currentArticle.getDescription())) {
+                mainArticleView.setDescription(currentArticle.getDescription());
+            }
+        }
+        else {
+            ArticleView articleView = ((ArticleView) holder.itemView);
+
+            if(StringUtils.isNotNullOrEmpty(currentArticle.getTitle())) {
+                articleView.setTitle(currentArticle.getTitle());
+            }
+        }
     }
 
     @Override

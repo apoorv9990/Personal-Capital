@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class Article implements Parcelable{
     private String title;
+    private String description;
     private String link;
 
     private Picture picture;
@@ -22,6 +23,14 @@ public class Article implements Parcelable{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getLink() {
@@ -43,6 +52,7 @@ public class Article implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(getTitle());
+        parcel.writeString(getDescription());
         parcel.writeString(getLink());
 
         parcel.writeParcelable(picture, 0);
@@ -50,6 +60,7 @@ public class Article implements Parcelable{
 
     private Article(Parcel in) {
         setTitle(in.readString());
+        setDescription(in.readString());
         setLink(in.readString());
 
         setPicture((Picture) in.readParcelable(Picture.class.getClassLoader()));

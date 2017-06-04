@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="spacing_xs">8dp</dimen>
+    <dimen name="spacing_s">12dp</dimen>
+    <dimen name="spacing_m">20dp</dimen>
+
+    <dimen name="article_row_stroke">1dp</dimen>
+
     <dimen name="title_size">30dp</dimen>
+    <dimen name="article_title_size">22dp</dimen>
+    <dimen name="article_description_size">18dp</dimen>
 </resources>

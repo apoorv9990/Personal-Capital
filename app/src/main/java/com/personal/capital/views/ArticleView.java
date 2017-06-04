@@ -4,8 +4,11 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +25,8 @@ import com.personal.capital.utils.PixelUtil;
 
 public class ArticleView extends LinearLayout {
 
-    private ImageView articleImageView;
-    private TextView articleTitleTextView;
+    private ImageView mArticleImageView;
+    private TextView mArticleTitleTextView;
 
     public ArticleView(Context context) {
         super(context);
@@ -45,8 +48,24 @@ public class ArticleView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
+    
+    public void setTitle(String title) {
+        Spanned titleSpanned;
 
-    public void init() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            titleSpanned = Html.fromHtml(title,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            titleSpanned = Html.fromHtml(title);
+        }
+
+        this.mArticleTitleTextView.setText(titleSpanned);
+    }
+
+    public void setTitleMaxLines(int maxLines) {
+        mArticleTitleTextView.setMaxLines(maxLines);
+    }
+
+    protected void init() {
         setOrientation(VERTICAL);
         setBackgroundResource(R.drawable.rounded_article_view);
         setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -55,35 +74,35 @@ public class ArticleView extends LinearLayout {
         setUpTitleView();
     }
 
-    public void setUpImageView(){
-        this.articleImageView = new ImageView(getContext());
+    private void setUpImageView(){
+        this.mArticleImageView = new ImageView(getContext());
 
         int imageHeight = PixelUtil.dpToPx(getContext(), 150);
 
         LinearLayout.LayoutParams imageViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, imageHeight);
 
-        this.articleImageView.setLayoutParams(imageViewParams);
+        this.mArticleImageView.setLayoutParams(imageViewParams);
 
-        this.articleImageView.setBackgroundResource(R.mipmap.ic_launcher_round);
+        this.mArticleImageView.setBackgroundResource(R.mipmap.ic_launcher_round);
 
-        addView(this.articleImageView);
+        addView(this.mArticleImageView);
     }
 
-    public void setUpTitleView() {
-        this.articleTitleTextView = new TextView(getContext());
+    private void setUpTitleView() {
+        this.mArticleTitleTextView = new TextView(getContext());
 
-        LinearLayout.LayoutParams imageViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams titleViewParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        this.articleTitleTextView.setLayoutParams(imageViewParams);
+        this.mArticleTitleTextView.setLayoutParams(titleViewParams);
 
         int spacingXSmall = PixelUtil.dpToPx(getContext(), (int) getContext().getResources().getDimension(R.dimen.spacing_xs));
 
-        this.articleTitleTextView.setPadding(spacingXSmall, spacingXSmall, spacingXSmall, spacingXSmall);
-        this.articleTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
-        this.articleTitleTextView.setMaxLines(2);
-        this.articleTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
-        this.articleTitleTextView.setText("Title");
+        this.mArticleTitleTextView.setPadding(spacingXSmall, spacingXSmall, spacingXSmall, spacingXSmall);
+        this.mArticleTitleTextView.setTextColor(getContext().getResources().getColor(android.R.color.black));
+        this.mArticleTitleTextView.setMaxLines(2);
+        this.mArticleTitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+        this.mArticleTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimensionPixelSize(R.dimen.article_title_size));
 
-        addView(this.articleTitleTextView);
+        addView(this.mArticleTitleTextView);
     }
 }
