@@ -11,4 +11,5 @@
     <dimen name="article_description_size">12dp</dimen>
 
     <dimen name="refresh_size">30dp</dimen>
+    <dimen name="refresh_margin_right">8dp</dimen>
 </resources>

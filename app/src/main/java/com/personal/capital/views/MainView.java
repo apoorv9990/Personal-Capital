@@ -124,6 +124,7 @@ public class MainView extends LinearLayout {
 
         FrameLayout.LayoutParams refreshParams = new FrameLayout.LayoutParams(refreshDimension, refreshDimension);
         refreshParams.gravity = Gravity.CENTER_VERTICAL | Gravity.RIGHT;
+        refreshParams.rightMargin = getContext().getResources().getDimensionPixelSize(R.dimen.refresh_margin_right);
 
         mRefreshImageView.setLayoutParams(refreshParams);
 

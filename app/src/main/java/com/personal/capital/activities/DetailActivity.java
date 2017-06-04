@@ -49,6 +49,6 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         mView.setTitle(articleTitle);
-        mView.setArticleUrl(articleLink);
+        mView.setArticleUrl(articleLink + "?displayMobileNavigation=0");
     }
 }
