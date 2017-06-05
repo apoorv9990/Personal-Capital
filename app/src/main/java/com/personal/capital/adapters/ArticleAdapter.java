@@ -1,23 +1,15 @@
 package com.personal.capital.adapters;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.personal.capital.R;
 import com.personal.capital.models.Article;
 import com.personal.capital.utils.StringUtils;
 import com.personal.capital.views.ArticleView;
 import com.personal.capital.views.MainArticleView;
 import com.personal.capital.workers.BitmapWorkerTask;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
@@ -31,34 +23,14 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
     private List<Article> mArticles;
 
-    private int screenWidth = 0;
-
-    private LruCache mMemoryCache;
-
     private Interactor mInteractor;
 
     public ArticleAdapter(Interactor interactor) {
-        int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        int cacheSize = maxMemory / 8;
-
         mInteractor = interactor;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.getByteCount() / 1024;
-            }
-        };
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        if(screenWidth == 0)
-            screenWidth = parent.getContext().getResources().getDisplayMetrics().widthPixels;
-
         ArticleView view;
 
         if(viewType == MAIN_ARTICLE) {
@@ -89,6 +61,7 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
 
+        // return the full screen view if it is the first position
         if(position == 0) {
             return MAIN_ARTICLE;
         }
@@ -99,10 +72,6 @@ public class ArticleAdapter extends RecyclerView.Adapter {
     public void setArticles(List<Article> articles) {
         this.mArticles = articles;
         notifyDataSetChanged();
-    }
-
-    public Bitmap getBitmapFromMemCache(String key) {
-        return (Bitmap) mMemoryCache.get(key);
     }
 
     public class ArticleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -122,19 +91,16 @@ public class ArticleAdapter extends RecyclerView.Adapter {
 
             ArticleView articleView = (ArticleView) itemView;
 
+            // set the title if it is noot empty
             if(StringUtils.isNotNullOrEmpty(mArticle.getTitle())) {
                 articleView.setTitle(mArticle.getTitle());
             }
 
-            Bitmap articleImage = getBitmapFromMemCache(mArticle.getPicture().getUrl());
+            // load the Bitmap
+            articleView.showProgress();
+            BitmapWorkerTask.loadBitmap(articleView.getContext(), mArticle.getPicture().getUrl(), articleView);
 
-            if(articleImage != null) {
-                articleView.setArticleImageBitmap(articleImage);
-            } else {
-                articleView.showProgress();
-                BitmapWorkerTask.loadBitmap(articleView.getContext(), mArticle.getPicture().getUrl(), articleView);
-            }
-
+            // if view is full screen view load the description as well
             if(articleView instanceof MainArticleView) {
 
                 MainArticleView mainArticleView = ((MainArticleView) articleView);
@@ -151,6 +117,7 @@ public class ArticleAdapter extends RecyclerView.Adapter {
         }
     }
 
+    // Used to pass the interactions to the Activity
     public interface Interactor {
         void onItemClicked(Article article);
     }

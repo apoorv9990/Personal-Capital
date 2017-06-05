@@ -17,6 +17,8 @@ import com.personal.capital.utils.PixelUtil;
 
 /**
  * Created by patel on 6/3/2017.
+ *
+ * Shows the article link in a {@link WebView}
  */
 
 public class DetailView extends LinearLayout {

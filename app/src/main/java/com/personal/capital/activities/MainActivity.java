@@ -16,14 +16,20 @@ import com.personal.capital.services.GetArticlesService;
 import com.personal.capital.utils.Constants;
 import com.personal.capital.views.MainView;
 
+/**
+ * Created by patel on 6/3/2017.
+ */
+
 public class MainActivity extends AppCompatActivity implements ArticleResultReceiver.Receiver{
 
     private static final String FEED = "feed";
 
+    // BroadcastReceiver that receives broadcast from service
     private ArticleResultReceiver mReceiver;
 
     private ProgressDialog mProgressDialog;
 
+    // View shown in place of the XML layout
     private MainView mView;
 
     private Feed mFeed;
@@ -74,12 +80,22 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         super.onDestroy();
     }
 
+    /**
+     * Used to save the feed
+     * @param outState - bundle used to save data
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(FEED, mFeed);
     }
 
+    /**
+     * Used to handle results sent from the receiver
+     *
+     * @param resultCode - the sent resultCode
+     * @param resultData - any data sent
+     */
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         switch (resultCode) {
@@ -106,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements ArticleResultRece
         }
     }
 
+    /**
+     * Used to start service that gets articles from the API
+     */
     public void getArticles() {
         Intent intent = new Intent(Intent.ACTION_SYNC, null, this, GetArticlesService.class);
         intent.putExtra(Constants.ARTICLE_RECEIVER, mReceiver);

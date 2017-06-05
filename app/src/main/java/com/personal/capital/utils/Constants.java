@@ -2,6 +2,8 @@ package com.personal.capital.utils;
 
 /**
  * Created by patel on 6/1/2017.
+ *
+ * Used to save constants
  */
 
 public class Constants {

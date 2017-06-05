@@ -14,10 +14,20 @@ import java.io.InputStream;
 
 /**
  * Created by patel on 6/3/2017.
+ *
+ * Parse the XML feed
  */
 
 public class FeedParser {
 
+    /**
+     * Takes in a stream and parses the XML to return a Feed object
+     *
+     * @param inputStream = the stream to be parsed
+     * @return
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
     public Feed parse(InputStream inputStream) throws XmlPullParserException, IOException {
         Feed feed = null;
         try {
@@ -32,6 +42,7 @@ public class FeedParser {
         return feed;
     }
 
+    // Reads the feed title and all the articles
     private Feed readFeed(XmlPullParser parser) throws IOException, XmlPullParserException {
         Feed feed = new Feed();
 
@@ -53,6 +64,7 @@ public class FeedParser {
         return feed;
     }
 
+    // Reads the article tags and its children and return Article object
     private Article readArticle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.ITEM);
 
@@ -80,6 +92,7 @@ public class FeedParser {
         return item;
     }
 
+    // Read the picture tag
     private Picture readPicture(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.MEDIA_CONTENT);
 
@@ -92,6 +105,7 @@ public class FeedParser {
         return picture;
     }
 
+    // Read the title tag in item
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.TITLE);
         String title = readText(parser);
@@ -99,6 +113,7 @@ public class FeedParser {
         return title;
     }
 
+    // Read the description tag
     private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.DESCRIPTION);
         String description = readText(parser);
@@ -106,6 +121,7 @@ public class FeedParser {
         return description;
     }
 
+    // Read the link tag
     private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, null, Constants.LINK);
         String link = readText(parser);
@@ -113,6 +129,7 @@ public class FeedParser {
         return link;
     }
 
+    // Read text inside a tag
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
@@ -122,6 +139,7 @@ public class FeedParser {
         return result;
     }
 
+    // skip tags that are not used
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();

@@ -25,6 +25,8 @@ import java.util.List;
 
 /**
  * Created by patel on 6/1/2017.
+ *
+ * Used in the {@link com.personal.capital.activities.MainActivity}
  */
 
 public class MainView extends LinearLayout {

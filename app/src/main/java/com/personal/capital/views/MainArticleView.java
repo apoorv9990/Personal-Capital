@@ -1,7 +1,6 @@
 package com.personal.capital.views;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -15,11 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.personal.capital.R;
-import com.personal.capital.models.Article;
 import com.personal.capital.utils.PixelUtil;
 
 /**
  * Created by patel on 6/3/2017.
+ *
+ * First row item that takes full screen in {@link android.support.v7.widget.RecyclerView}
  */
 
 public class MainArticleView extends ArticleView{

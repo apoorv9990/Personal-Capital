@@ -21,6 +21,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by patel on 6/1/2017.
+ *
+ * Used to get the articles from API and then send it to {@link com.personal.capital.receivers.ArticleResultReceiver}
  */
 
 public class GetArticlesService extends IntentService {
@@ -38,7 +40,6 @@ public class GetArticlesService extends IntentService {
             receiver.send(Constants.RUNNING, Bundle.EMPTY);
 
             try{
-                //TODO get data
                 Feed feed = getArticles();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Constants.ARTICLES_RESPONSE, feed);
@@ -51,6 +52,10 @@ public class GetArticlesService extends IntentService {
         }
     }
 
+    /**
+     * Fetch the articles from API
+     * @return the parsed Feed object
+     */
     private Feed getArticles() {
 
         InputStream stream = null;
@@ -86,31 +91,5 @@ public class GetArticlesService extends IntentService {
         }
 
         return feed;
-    }
-
-    private String readStream(InputStream inputStream) {
-        BufferedReader bufferedReader = null;
-        StringBuilder stringBuilder = new StringBuilder();
-
-        String line;
-        try {
-
-            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            while((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if(bufferedReader != null) {
-                try {
-                    bufferedReader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return stringBuilder.toString();
     }
 }

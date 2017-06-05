@@ -26,6 +26,8 @@ import com.personal.capital.utils.PixelUtil;
 
 /**
  * Created by patel on 6/1/2017.
+ *
+ * Provides the row items in {@link android.support.v7.widget.RecyclerView}
  */
 
 public class ArticleView extends LinearLayout {
@@ -55,7 +57,8 @@ public class ArticleView extends LinearLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
-    
+
+    // set HTML encoded string into TextView
     public void setTitle(String title) {
         Spanned titleSpanned;
 
@@ -92,6 +95,7 @@ public class ArticleView extends LinearLayout {
         mImageViewProgressDialog.setVisibility(View.VISIBLE);
     }
 
+    // setup the view
     protected void init() {
         setOrientation(VERTICAL);
         setBackgroundResource(R.drawable.rounded_article_view);

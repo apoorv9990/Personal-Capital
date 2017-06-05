@@ -8,6 +8,7 @@ import android.util.DisplayMetrics;
  */
 
 public class PixelUtil {
+    // Converts given dp and return pixels
     public static int dpToPx(Context context, int dp) {
         int px = Math.round(dp * getPixelScaleFactor(context));
         return px;

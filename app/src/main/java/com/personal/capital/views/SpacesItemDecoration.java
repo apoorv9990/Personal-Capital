@@ -8,8 +8,9 @@ import com.personal.capital.R;
 
 /**
  * Created by patel on 6/1/2017.
+ *
+ * Provides spacing between items in RecyclerView
  */
-// Provides spacing between items in RecyclerView
 public class SpacesItemDecoration extends RecyclerView.ItemDecoration {
     private int space;
 

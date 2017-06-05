@@ -27,6 +27,10 @@ public class ArticleResultReceiver extends ResultReceiver {
         this.mReceiver = receiver;
     }
 
+    /**
+     * Passed the received result from {@link com.personal.capital.services.GetArticlesService}
+     * to {@link com.personal.capital.activities.MainActivity}
+     */
     @Override
     protected void onReceiveResult(int resultCode, Bundle resultData) {
         if (mReceiver != null) {
@@ -34,6 +38,7 @@ public class ArticleResultReceiver extends ResultReceiver {
         }
     }
 
+    // Used to pass results to the @MainActivity
     public interface Receiver {
         void onReceiveResult(int resultCode, Bundle resultData);
     }

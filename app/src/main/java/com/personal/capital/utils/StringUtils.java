@@ -5,11 +5,13 @@ package com.personal.capital.utils;
  */
 
 public class StringUtils {
+
+    /**
+     * @param s - string to check
+     * @return boolean whether String is empty or not
+     */
     public static boolean isNotNullOrEmpty(String s) {
         return s != null && !s.isEmpty();
     }
 
-    public static boolean isNullOrEmpty(String s) {
-        return s == null || s.isEmpty();
-    }
 }
